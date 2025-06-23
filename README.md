@@ -15,7 +15,7 @@ RelayRL is a high-performance, distributed reinforcement learning (RL) framework
 - **Distributed RL Orchestration:**  
   Run agents and training servers as separate processes, communicating via gRPC or ZeroMQ.
 - **Python & Rust Interoperability:**  
-  Use Python's PyTorch for RL algorithms and Rust for orchestration and performance-critical components.
+  Natively uses Python's PyTorch for RL algorithms and Rust for orchestration and performance-critical components.
 - **Extensible Algorithm Support:**  
   Plug in your own RL algorithms in Python (see `examples/` for Jupyter notebooks).
 - **Benchmarking & Profiling:**  
