@@ -4,14 +4,14 @@ use criterion::measurement::WallTime;
 use criterion::{
     BenchmarkGroup, BenchmarkId, Criterion, Throughput, criterion_group, criterion_main,
 };
-use relayrl_framework::client::agent_wrapper::RelayRLAgent;
-use relayrl_framework::get_or_init_tokio_runtime;
-use relayrl_framework::server::training_server_wrapper::TrainingServer;
+use relayrl_framework::network::client::agent_wrapper::RelayRLAgent;
+use relayrl_framework::network::server::training_server_wrapper::TrainingServer;
+use relayrl_framework::orchestration::tokio::utils::get_or_init_tokio_runtime;
 use std::sync::Arc;
 use std::time::Duration;
 
-use relayrl_framework::client::agent_grpc::RelayRLAgentGrpcTrait;
-use relayrl_framework::client::agent_zmq::RelayRLAgentZmqTrait;
+use relayrl_framework::network::client::agent_grpc::RelayRLAgentGrpcTrait;
+use relayrl_framework::network::client::agent_zmq::RelayRLAgentZmqTrait;
 use tch::{Device, Kind, Tensor};
 use tokio::runtime::Runtime;
 use tokio::sync::RwLock;
