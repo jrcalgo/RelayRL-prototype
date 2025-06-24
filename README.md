@@ -12,18 +12,25 @@ RelayRL is a high-performance, distributed reinforcement learning (RL) framework
 
 ## Features
 
-- **Distributed RL Orchestration:**  
+- **Distributed RL Orchestration:**
   Run agents and training servers as separate processes, communicating via gRPC or ZeroMQ.
-- **Python & Rust Interoperability:**  
+- **Python & Rust Interoperability:**
   Natively uses Python's PyTorch for RL algorithms and Rust for orchestration and performance-critical components.
-- **Extensible Algorithm Support:**  
-  Plug in your own RL algorithms in Python (see `examples/` for Jupyter notebooks).
-- **Benchmarking & Profiling:**  
+- **Extensible Algorithm/Environment Support:**
+  Plug in your own RL algorithms/environments in Python (see `examples/` for Jupyter notebooks).
+- **Benchmarking & Profiling:**
   Tools and scripts for measuring network and runtime performance.
-- **Configurable Experiments:**  
+- **Configurable Experiments:**
   JSON-based configuration for easy experiment management.
 
 ## Quick Start
+
+**Install RelayRL Framework:**
+  ```sh
+  pip install relayrl_framework
+  ```
+
+## Build From Source
 
 **Supported Platforms:** MacOS, Linux, Windows (x86_64)
 
@@ -60,21 +67,34 @@ While it is theoretically possible to launch multiple agent and training server 
 - `examples/` — Example scripts and Jupyter notebooks (Python API usage)
 - `README.md` — This file (project overview)
 - `relayrl_framework/README.md` — Framework-level and development instructions
+- `examples/README.md` — Python integration and API utilization instructions
 
-## Future Work (Currently in-progress in a separate repository)
+## Repository Feature Roadmap
+
+- Improved stability and error handling for gRPC and ZeroMQ implementations
+- Cleaned up user-level APIs (RelayRLAgent, TrainingServer, ConfigLoader, etc.)
+- Better documentation and API reference
+- Benchmarking against known frameworks (RayRLLib, Stable-Baselines3, CleanRL, etc.)
+- Preservation of most critical components/logic
+
+## Related Work (Currently in-progress in a separate repository)
 
 - Improved multi-agent support and orchestration by enhancing modularity
 - Enhanced stability, scalability and error handling during training through comprehensive network error handling, backpressure, etc.
 - Exposing scalable components for containerized automation
 - Easing execution and external application integration through compilation into CLI executables
 - More built-in RL algorithms available
-- Better documentation and API reference
+
 
 ## Disclaimer
 
 This project is a **prototype** and is **unstable during training**.  
 APIs and features are subject to change.  
 Contributions and feedback are welcome!
+
+## Contributions
+
+[See contribution instructions!](CONTRIBUTING.md)
 
 ## License
 
