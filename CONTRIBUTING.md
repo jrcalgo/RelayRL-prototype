@@ -2,13 +2,11 @@
 
 Thank you for your interest in contributing to RelayRL! This guide will help you make high-quality contributions and understand our development workflow.
 
----
 
 ## Code of Conduct
 
 By participating, you are expected to uphold the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/).
 
----
 
 ## How to Contribute
 
@@ -73,18 +71,15 @@ By participating, you are expected to uphold the [Contributor Covenant Code of C
 - Only maintainers can merge PRs.
 - PRs should be up-to-date with the `main` branch before merging.
 
----
 
 ## Communication
 - Use [GitHub Issues](https://github.com/your-org/RelayRL-prototype/issues) for bug reports, feature requests, and questions.
 - For larger changes, open a discussion or issue before starting work.
 
----
 
 ## Additional Notes
 - This project is a **prototype** and is **unstable during training**. Expect rapid changes and breaking updates.
 - Please be respectful and constructive in all communications.
 
----
 
 Thank you for helping make RelayRL better! 
