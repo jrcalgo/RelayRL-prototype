@@ -1,6 +1,4 @@
-# RelayRL Prototype
-
-**Prototype Distributed Reinforcement Learning Framework**
+# RelayRL, a Prototype Distributed Reinforcement Learning Framework
 
 > **Platform Support:**
 > RelayRL runs on **MacOS, Linux, and Windows** (x86_64). Some dependencies may require additional setup on Windows.
