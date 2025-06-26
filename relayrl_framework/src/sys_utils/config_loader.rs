@@ -65,47 +65,6 @@ pub static DEFAULT_CONFIG_PATH: Lazy<Option<PathBuf>> =
 
 pub const DEFAULT_CONFIG_CONTENT: &str = r#"{
     "algorithms": {
-        "C51": {
-            "batch_size": 64,
-            "act_dim": 4,
-            "seed": 0,
-            "traj_per_epoch": 5,
-            "n_atoms": 51,
-            "v_min": -500,
-            "v_max": 1000,
-            "gamma": 0.95,
-            "epsilon": 1.0,
-            "epsilon_min": 0.01,
-            "epsilon_decay": 0.999,
-            "train_update_freq": 4,
-            "target_update_freq": 50,
-            "q_lr": 1e-5,
-            "train_q_iters": 50
-        },
-        "DDPG": {
-            "seed": 1,
-            "gamma": 0.99,
-            "tau": 1e-2,
-            "learning_rate": 3e-3,
-            "batch_size": 128,
-            "buffer_size": 50000,
-            "learning_starts": 128,
-            "policy_frequency": 1,
-            "noise_scale": 0.1,
-            "train_iters": 50
-        },
-        "DQN": {
-            "batch_size": 32,
-            "seed": 0,
-            "traj_per_epoch": 3,
-            "gamma": 0.95,
-            "epsilon": 1.0,
-            "epsilon_min": 0.01,
-            "epsilon_decay": 0.001,
-            "train_update_freq": 8,
-            "q_lr": 5e-4,
-            "train_q_iters": 80
-        },
         "PPO": {
             "seed": 0,
             "traj_per_epoch": 1,
@@ -128,54 +87,6 @@ pub const DEFAULT_CONFIG_CONTENT: &str = r#"{
             "pi_lr": 3e-4,
             "vf_lr": 1e-3,
             "train_vf_iters": 80
-        },
-        "RPO": {
-            "seed": 0,
-            "learning_rate": 3e-4,
-            "num_steps": 2048,
-            "gamma": 0.99,
-            "gae_lambda": 0.95,
-            "clip_coef": 0.2,
-            "ent_coef": 0.0,
-            "vf_coef": 0.5,
-            "max_grad_norm": 0.5,
-            "rpo_alpha": 0.5,
-            "update_epochs": 10,
-            "num_minibatches": 32,
-            "anneal_lr": true,
-            "clip_vloss": true,
-            "target_kl": null,
-            "total_timesteps_anneal_lr": 1000000
-        },
-        "SAC": {
-            "discrete": true,
-            "adaptive_alpha": false,
-            "act_dim": 4,
-            "batch_size": 128,
-            "seed": 0,
-            "traj_per_epoch": 10,
-            "log_std_min": -20,
-            "log_std_max": 2,
-            "gamma": 0.99,
-            "polyak": 1e-2,
-            "alpha": 0.1,
-            "lr": 5e-4,
-            "clip_grad_norm": 1,
-            "train_update_freq": 8,
-            "train_iters": 50
-        },
-        "TD3": {
-            "seed": 1,
-            "gamma": 0.99,
-            "tau": 0.005,
-            "learning_rate": 3e-4,
-            "batch_size": 128,
-            "buffer_size": 50000,
-            "exploration_noise": 0.1,
-            "policy_noise": 0.2,
-            "noise_clip": 0.5,
-            "learning_starts": 25000,
-            "policy_frequency": 2
         }
     },
     "grpc_idle_timeout": 30,
@@ -234,86 +145,18 @@ pub struct Config {
 /// Each field is optional and holds algorithm-specific parameters.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AlgorithmConfig {
-    #[serde(rename = "C51")]
-    pub c51: Option<C51Params>,
-    #[serde(rename = "DDPG")]
-    pub ddpg: Option<DDPGParams>,
-    #[serde(rename = "DQN")]
-    pub dqn: Option<DQNParams>,
     #[serde(rename = "PPO")]
     pub ppo: Option<PPOParams>,
     #[serde(rename = "REINFORCE")]
     pub reinforce: Option<REINFORCEParams>,
-    #[serde(rename = "RPO")]
-    pub rpo: Option<RPOParams>,
-    #[serde(rename = "SAC")]
-    pub sac: Option<SACParams>,
-    #[serde(rename = "TD3")]
-    pub td3: Option<TD3Params>,
-    // Add other fields depending on the algorithm
 }
 
 /// An enum representing loaded algorithm parameters.
 /// Each variant corresponds to one algorithm's parameter struct.
 #[derive(Debug, Clone)]
 pub enum LoadedAlgorithmParams {
-    C51(C51Params),
-    DDPG(DDPGParams),
-    DQN(DQNParams),
     PPO(PPOParams),
     REINFORCE(REINFORCEParams),
-    SAC(SACParams),
-    TD3(TD3Params),
-}
-
-/// Parameters for the C51 algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct C51Params {
-    pub batch_size: u32,
-    pub act_dim: u32,
-    pub seed: u32,
-    pub traj_per_epoch: u32,
-    pub n_atoms: u32,
-    pub v_min: f32,
-    pub v_max: f32,
-    pub gamma: f32,
-    pub epsilon: f32,
-    pub epsilon_min: f32,
-    pub epsilon_decay: f32,
-    pub train_update_freq: u32,
-    pub target_update_freq: u32,
-    pub q_lr: f32,
-    pub train_q_iters: u32,
-}
-
-/// Parameters for the DDPG algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct DDPGParams {
-    pub seed: u32,
-    pub gamma: f32,
-    pub tau: f32,
-    pub learning_rate: f32,
-    pub batch_size: u32,
-    pub buffer_size: u32,
-    pub learning_starts: u32,
-    pub policy_frequency: u32,
-    pub noise_scale: f32,
-    pub train_iters: u32,
-}
-
-/// Parameters for the DQN algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct DQNParams {
-    pub batch_size: u32,
-    pub seed: u32,
-    pub traj_per_epoch: u32,
-    pub gamma: f32,
-    pub epsilon: f32,
-    pub epsilon_min: f32,
-    pub epsilon_decay: f32,
-    pub train_update_freq: u32,
-    pub q_lr: f32,
-    pub train_q_iters: u32,
 }
 
 /// Parameters for the PPO algorithm.
@@ -343,63 +186,6 @@ pub struct REINFORCEParams {
     pub pi_lr: f32,
     pub vf_lr: f32,
     pub train_vf_iters: u32,
-}
-
-/// Parameters for the RPO algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct RPOParams {
-    pub seed: u32,
-    pub learning_rate: f32,
-    pub num_steps: u32,
-    pub gamma: f32,
-    pub gae_lambda: f32,
-    pub clip_coef: f32,
-    pub ent_coef: f32,
-    pub vf_coef: f32,
-    pub max_grad_norm: f32,
-    pub rpo_alpha: f32,
-    pub update_epochs: u32,
-    pub num_minibatches: u32,
-    pub anneal_lr: bool,
-    pub clip_vloss: bool,
-    pub target_kl: Option<f32>,
-    pub total_timesteps_anneal_lr: u32,
-}
-
-/// Parameters for the SAC algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SACParams {
-    pub discrete: bool,
-    pub adaptive_alpha: bool,
-    pub act_dim: u32,
-    pub batch_size: u32,
-    pub seed: u32,
-    pub traj_per_epoch: u32,
-    pub log_std_min: f32,
-    pub log_std_max: f32,
-    pub gamma: f32,
-    pub polyak: f32,
-    pub alpha: f32,
-    pub lr: f32,
-    pub clip_grad_norm: u32,
-    pub train_update_freq: u32,
-    pub train_iters: u32,
-}
-
-/// Parameters for the TD3 algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct TD3Params {
-    pub seed: u32,
-    pub gamma: f32,
-    pub tau: f32,
-    pub learning_rate: f32,
-    pub batch_size: u32,
-    pub buffer_size: u32,
-    pub exploration_noise: f32,
-    pub policy_noise: f32,
-    pub noise_clip: f32,
-    pub learning_starts: u32,
-    pub policy_frequency: u32,
 }
 
 /// Configuration parameters for servers.
@@ -648,49 +434,6 @@ impl ConfigLoader {
             return None;
         }
         match algo {
-            "C51" => {
-                let params = config
-                    .algorithms
-                    .as_ref()
-                    .and_then(|alg| alg.c51.clone())
-                    .unwrap_or_else(|| C51Params {
-                        batch_size: 32,
-                        act_dim: 4,
-                        seed: 0,
-                        traj_per_epoch: 3,
-                        n_atoms: 51,
-                        v_min: -10.0,
-                        v_max: 10.0,
-                        gamma: 0.95,
-                        epsilon: 1.0,
-                        epsilon_min: 0.01,
-                        epsilon_decay: 5e-4,
-                        train_update_freq: 8,
-                        target_update_freq: 20,
-                        q_lr: 1e-3,
-                        train_q_iters: 80,
-                    });
-                Some(LoadedAlgorithmParams::C51(params))
-            }
-            "DQN" => {
-                let params = config
-                    .algorithms
-                    .as_ref()
-                    .and_then(|alg| alg.dqn.clone())
-                    .unwrap_or(DQNParams {
-                        batch_size: 32,
-                        seed: 0,
-                        traj_per_epoch: 3,
-                        gamma: 0.95,
-                        epsilon: 1.0,
-                        epsilon_min: 0.01,
-                        epsilon_decay: 5e-4,
-                        train_update_freq: 4,
-                        q_lr: 1e-3,
-                        train_q_iters: 80,
-                    });
-                Some(LoadedAlgorithmParams::DQN(params))
-            }
             "PPO" => {
                 let params = config
                     .algorithms
@@ -727,30 +470,6 @@ impl ConfigLoader {
                         train_vf_iters: 80,
                     });
                 Some(LoadedAlgorithmParams::REINFORCE(params))
-            }
-            "SAC" => {
-                let params = config
-                    .algorithms
-                    .as_ref()
-                    .and_then(|alg| alg.sac.clone())
-                    .unwrap_or_else(|| SACParams {
-                        discrete: true,
-                        adaptive_alpha: false,
-                        act_dim: 1,
-                        batch_size: 32,
-                        seed: 0,
-                        traj_per_epoch: 3,
-                        log_std_min: -20.0,
-                        log_std_max: 2.0,
-                        gamma: 0.99,
-                        polyak: 0.995,
-                        alpha: 0.2,
-                        lr: 3e-4,
-                        clip_grad_norm: 1,
-                        train_update_freq: 1,
-                        train_iters: 80,
-                    });
-                Some(LoadedAlgorithmParams::SAC(params))
             }
             _ => {
                 eprintln!(

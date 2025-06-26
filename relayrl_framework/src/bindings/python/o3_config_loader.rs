@@ -70,45 +70,6 @@ impl PyConfigLoader {
         if let Some(algorithm_config) = algorithm_params {
             let dict: Bound<PyDict> = PyDict::new(py);
 
-            // C51
-            if let LoadedAlgorithmParams::C51(c51_params) = algorithm_config {
-                let c51_dict: Bound<PyDict> = PyDict::new(py);
-                c51_dict.set_item("batch_size", c51_params.batch_size)?;
-                c51_dict.set_item("seed", c51_params.seed)?;
-                c51_dict.set_item("traj_per_epoch", c51_params.traj_per_epoch)?;
-                c51_dict.set_item("n_atoms", c51_params.n_atoms)?;
-                c51_dict.set_item("v_min", round_to_8_decimals(c51_params.v_min))?;
-                c51_dict.set_item("v_max", round_to_8_decimals(c51_params.v_max))?;
-                c51_dict.set_item("gamma", round_to_8_decimals(c51_params.gamma))?;
-                c51_dict.set_item("epsilon", round_to_8_decimals(c51_params.epsilon))?;
-                c51_dict.set_item("epsilon_min", round_to_8_decimals(c51_params.epsilon_min))?;
-                c51_dict.set_item(
-                    "epsilon_decay",
-                    round_to_8_decimals(c51_params.epsilon_decay),
-                )?;
-                c51_dict.set_item("train_update_freq", c51_params.train_update_freq)?;
-                c51_dict.set_item("target_update_freq", c51_params.target_update_freq)?;
-                c51_dict.set_item("q_lr", round_to_8_decimals(c51_params.q_lr))?;
-                c51_dict.set_item("train_q_iters", c51_params.train_q_iters)?;
-                dict.set_item("C51", c51_dict)?;
-            }
-
-            // DQN
-            if let LoadedAlgorithmParams::DQN(dqn_params) = algorithm_config {
-                let dqn_dict: Bound<PyDict> = PyDict::new(py);
-                dqn_dict.set_item("batch_size", dqn_params.batch_size)?;
-                dqn_dict.set_item("seed", dqn_params.seed)?;
-                dqn_dict.set_item("traj_per_epoch", dqn_params.traj_per_epoch)?;
-                dqn_dict.set_item("gamma", dqn_params.gamma)?;
-                dqn_dict.set_item("epsilon", dqn_params.epsilon)?;
-                dqn_dict.set_item("epsilon_min", dqn_params.epsilon_min)?;
-                dqn_dict.set_item("epsilon_decay", dqn_params.epsilon_decay)?;
-                dqn_dict.set_item("train_update_freq", dqn_params.train_update_freq)?;
-                dqn_dict.set_item("q_lr", dqn_params.q_lr)?;
-                dqn_dict.set_item("train_q_iters", dqn_params.train_q_iters)?;
-                dict.set_item("DQN", dqn_dict)?;
-            }
-
             // PPO
             if let LoadedAlgorithmParams::PPO(ppo_params) = algorithm_config {
                 let ppo_dict: Bound<PyDict> = PyDict::new(py);
@@ -138,27 +99,6 @@ impl PyConfigLoader {
                 reinforce_dict.set_item("vf_lr", reinforce_params.vf_lr)?;
                 reinforce_dict.set_item("train_vf_iters", reinforce_params.train_vf_iters)?;
                 dict.set_item("REINFORCE", reinforce_dict)?;
-            }
-
-            // SAC
-            if let LoadedAlgorithmParams::SAC(sac_params) = algorithm_config {
-                let sac_dict: Bound<PyDict> = PyDict::new(py);
-                sac_dict.set_item("discrete", sac_params.discrete)?;
-                sac_dict.set_item("adaptive_alpha", sac_params.adaptive_alpha)?;
-                sac_dict.set_item("act_dim", sac_params.act_dim)?;
-                sac_dict.set_item("batch_size", sac_params.batch_size)?;
-                sac_dict.set_item("seed", sac_params.seed)?;
-                sac_dict.set_item("traj_per_epoch", sac_params.traj_per_epoch)?;
-                sac_dict.set_item("log_std_min", sac_params.log_std_min)?;
-                sac_dict.set_item("log_std_max", sac_params.log_std_max)?;
-                sac_dict.set_item("gamma", sac_params.gamma)?;
-                sac_dict.set_item("polyak", sac_params.polyak)?;
-                sac_dict.set_item("alpha", sac_params.alpha)?;
-                sac_dict.set_item("lr", sac_params.lr)?;
-                sac_dict.set_item("clip_grad_norm", sac_params.clip_grad_norm)?;
-                sac_dict.set_item("train_update_freq", sac_params.train_update_freq)?;
-                sac_dict.set_item("train_iters", sac_params.train_iters)?;
-                dict.set_item("SAC", sac_dict)?;
             }
 
             // Return the constructed dictionary as a PyObject
