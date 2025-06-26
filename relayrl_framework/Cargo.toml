@@ -8,7 +8,7 @@ description = "A system-oriented reinforcement learning framework using a Rust b
 readme = "README.md"                      # Path to the README file.
 keywords = ['reinforcement', 'learning', 'rl-framework', 'client-server', 'system-integration']  # Keywords for discovery.
 categories = ['science', 'simulation', 'asynchronous', 'network-programming']  # Crates.io categories.
-license = "MIT"                           # License identifier.
+license = "Apache-2.0"                           # License identifier.
 
 # documentation configuration.
 [package.metadata.docs.rs]
