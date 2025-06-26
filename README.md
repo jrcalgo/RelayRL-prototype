@@ -100,4 +100,4 @@ Contributions and feedback are welcome!
 
 ## License
 
-[APACHE 2.0](LICENSE)
+[Apache License 2.0](LICENSE)
