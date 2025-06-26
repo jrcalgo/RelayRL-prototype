@@ -1,10 +1,10 @@
 # RelayRL, a Prototype Distributed Reinforcement Learning Framework
 
-> **Platform Support:**
-> RelayRL runs on **MacOS, Linux, and Windows** (x86_64). Some dependencies may require additional setup on Windows.
->
 > **Warning:**  
 > This project is a **prototype** and is **unstable during training**. Use at your own risk and expect breaking changes.
+> 
+> **Platform Support:**
+> RelayRL runs on **MacOS, Linux, and Windows** (x86_64). Some dependencies may require additional setup on Windows.
 
 RelayRL is a high-performance, distributed reinforcement learning (RL) framework designed for research and experimentation. By using proven transport-layer communication protocols, RelayRL integrates a client-server architecture. It provides a robust Rust backend with Python bindings, enabling seamless integration with modern ML workflows and high-speed system-level orchestration. 
 
