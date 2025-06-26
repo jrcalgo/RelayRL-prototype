@@ -94,4 +94,4 @@ Contributions are welcome! Please open issues or pull requests for bug reports, 
 
 ## License
 
-[MIT](../LICENSE)
+[Apache License 2.0](../LICENSE)
