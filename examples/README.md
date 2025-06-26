@@ -58,6 +58,22 @@ examples/
      - `config.json` (the deployed config for the run)
      - (Optionally) TensorBoard event files, if enabled in the config.
    - You can point TensorBoard to the `logs/` directory to visualize training if TensorBoard is enabled.
+  
+## Adding New Example Environments
+
+To add a new environment (e.g., BipedalWalker or CartPole):
+- Copy one of the existing notebooks (e.g., `lunar_lander_grpc.ipynb` or `cartpole_zmq.ipynb`).
+- Update the `env = gym.make(...)` line to your desired environment.
+- Set the correct observation and action dimensions in the `TrainingServer` and `RelayRLAgent` initialization.
+- Place the notebook in the appropriate directory reflecting the backend (grpc or zmq), algorithm (PPO or REINFORCE), and environment type (classic_control, box2d, etc).
+
+## Notes
+
+- All examples use the RelayRL Python API, which interfaces with the underlying Rust implementation.
+- If you encounter missing dependencies, ensure your Python environment matches the requirements in `relayrl_framework/src/native/python/requirements`.
+- The structure supports easy extension to new environments and algorithms.
+- Model and log artifacts are always created in designated `env_dir` path variable as the environment you run.
+- Server-side logs reflect training performance and other PyTorch algorithm metrics. The deployed config and (optional) TensorBoard files are stored in the logs directory for each run.
 
 ## How to Use in Novel Environments
 
@@ -164,22 +180,6 @@ env.close()
 - Ensure your Python environment matches the requirements in `relayrl_framework/src/native/python/requirements`.
 - Check that network ports are open and not blocked by firewalls if running across machines.
 - Review logs in the `logs/` directory for error messages and training diagnostics.
-
-## Adding New Environments
-
-To add a new environment (e.g., BipedalWalker or CartPole):
-- Copy one of the existing notebooks (e.g., `lunar_lander_grpc.ipynb` or `cartpole_zmq.ipynb`).
-- Update the `env = gym.make(...)` line to your desired environment.
-- Set the correct observation and action dimensions in the `TrainingServer` and `RelayRLAgent` initialization.
-- Place the notebook in the appropriate directory reflecting the backend (grpc or zmq), algorithm (PPO or REINFORCE), and environment type (classic_control, box2d, etc).
-
-## Notes
-
-- All examples use the RelayRL Python API, which interfaces with the underlying Rust implementation.
-- If you encounter missing dependencies, ensure your Python environment matches the requirements in `relayrl_framework/src/native/python/requirements`.
-- The structure supports easy extension to new environments and algorithms.
-- Model and log artifacts are always created in designated `env_dir` path variable as the environment you run.
-- Server-side logs reflect training performance and other PyTorch algorithm metrics. The deployed config and (optional) TensorBoard files are stored in the logs directory for each run.
 
 ---
 
