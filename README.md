@@ -1,4 +1,4 @@
-# RelayRL, a Prototype Distributed Reinforcement Learning Framework
+# RelayRL, a Distributed Reinforcement Learning Framework
 
 > **Warning:**  
 > This project is a **prototype** and is **unstable during training**. Use at your own risk and expect breaking changes.
