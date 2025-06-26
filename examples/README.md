@@ -1,4 +1,4 @@
-# RelayRL Example Notebooks
+# RelayRL Example Notebooks / Environment Tutorial
 
 This directory contains example Jupyter notebooks demonstrating how to use the RelayRL framework with different reinforcement learning algorithms, environments, and communication backends (gRPC and ZMQ).
 
