@@ -8,6 +8,11 @@
 
 RelayRL is a high-performance, distributed reinforcement learning (RL) framework designed for research and experimentation. By using proven transport-layer communication protocols, RelayRL integrates a client-server architecture. It provides a robust Rust backend with Python bindings, enabling seamless integration with modern ML workflows and high-speed system-level orchestration. 
 
+## Single-Agent Focus
+
+RelayRL is **primarily designed for single-agent RL**.  
+While it is theoretically possible to launch multiple agent and training server processes for multi-agent scenarios, the framework does **not** natively support scalable multi-agent orchestration at this time.
+
 ## Features
 
 - **Distributed RL Orchestration:**
@@ -53,17 +58,17 @@ RelayRL is a high-performance, distributed reinforcement learning (RL) framework
 
 4. **Run an example (see `examples/`):**
    - Jupyter notebooks demonstrate how to use the Python API for training and evaluation.
+  
+## Tutorial
 
-## Single-Agent Focus
-
-RelayRL is **primarily designed for single-agent RL**.  
-While it is theoretically possible to launch multiple agent and training server processes for multi-agent scenarios, the framework does **not** natively support scalable multi-agent orchestration at this time.
+[See the examples' README!](https://github.com/jrcalgo/RelayRL-proto/blob/main/examples/README.md#how-to-use-in-novel-environments)
 
 ## Directory Structure
 
 - `relayrl_framework/` — Core Rust framework and Python bindings
 - `examples/` — Example scripts and Jupyter notebooks (Python API usage)
 - `README.md` — This file (project overview)
+- `CONTRIBUTING.md` — OSS Contribution instructions for relayrl_framework crate
 - `relayrl_framework/README.md` — Framework-level and development instructions
 - `examples/README.md` — Python integration and API utilization instructions
 
@@ -82,11 +87,6 @@ While it is theoretically possible to launch multiple agent and training server 
 - Exposing scalable components for containerized automation
 - Easing execution and external application integration through compilation into CLI executables
 - More built-in RL algorithms available
-
-## Implementation Tutorial
-
-[See the examples' README!](examples/README.md)
-
 
 ## Disclaimer
 
