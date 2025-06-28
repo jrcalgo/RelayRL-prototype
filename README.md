@@ -82,8 +82,9 @@ While it is theoretically possible to launch multiple agent and training server 
 
 ## Related Work (Currently in-progress in a separate repository)
 
-- Improved multi-agent support and orchestration by enhancing modularity
-- Enhanced stability, scalability and error handling during training through comprehensive network error handling, backpressure, etc.
+- Improved multi-agent support and orchestration by enhancing component modularity
+- Enhanced stability, scalability and error handling during training through comprehensive network error handling, backpressure, configurable components, etc.
+- Real-time configuration updates and shutdown/init signals through lifecycle control
 - Exposing scalable components for containerized automation
 - Easing execution and external application integration through compilation into CLI executables
 - More built-in RL algorithms available
