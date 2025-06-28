@@ -18,7 +18,7 @@ While it is theoretically possible to launch multiple agent and training server 
 - **Distributed RL Orchestration:**
   Run agents and training servers as separate processes, communicating via gRPC or ZeroMQ.
 - **Python & Rust Interoperability:**
-  Natively uses Python's PyTorch for RL algorithms and Rust for orchestration and performance-critical components.
+  Natively supports built-in or custom Python PyTorch for RL algorithms and Rust for orchestration and performance-critical components.
 - **Extensible Algorithm/Environment Support:**
   Plug in your own RL algorithms/environments in Python (see `examples/` for Jupyter notebooks).
 - **Benchmarking & Profiling:**
