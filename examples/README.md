@@ -6,7 +6,7 @@ This directory contains example Jupyter notebooks demonstrating how to use the R
 
 ```
 examples/
-  PPO/
+  REINFORCE_with_baseline/
     classic_control/
       cartpole/
         grpc/
@@ -24,7 +24,7 @@ examples/
           lunar_lander_grpc.ipynb
         zmq/
           lunar_lander_zmq.ipynb
-  REINFORCE/
+  REINFORCE_without_baseline/
     classic_control/
       cartpole/
         grpc/
@@ -49,10 +49,10 @@ examples/
 ## How to Use
 
 1. **Install dependencies** as described in the main project README.
-2. **Open any notebook** (e.g., `PPO/classic_control/cartpole/grpc/cartpole_grpc.ipynb`) in Jupyter or VSCode.
+2. **Open any notebook** (e.g., `REINFORCE_with_baseline/classic_control/cartpole/grpc/cartpole_grpc.ipynb`) in Jupyter or VSCode.
 3. **Run the cells** to launch the training server and start the RL training loop using the RelayRL Python bindings.
 4. **Artifacts:**
-   - When you run an example, `server_model.pt` and `client_model.pt` are created in the same directory as the notebook (e.g., `PPO/classic_control/cartpole/grpc/`).
+   - When you run an example, `server_model.pt` and `client_model.pt` are created in the same directory as the notebook (e.g., `REINFORCE_with_baseline/classic_control/cartpole/grpc/`).
    - A `logs/` directory is also created in the same location, containing subdirectories for each run. Each run directory stores:
      - `progress.txt` (training performance and PyTorch algorithm metrics)
      - `config.json` (the deployed config for the run)
@@ -101,7 +101,7 @@ import gymnasium as gym
 env = gym.make('CartPole-v1')
 
 server = TrainingServer(
-    algorithm_name="PPO",                # RL algorithm: "PPO" or "REINFORCE"
+    algorithm_name="REINFORCE",                # RL algorithm: "REINFORCE" (only one for now)
     obs_dim=env.observation_space.shape[0],
     act_dim=env.action_space.n,
     buf_size=1000000,                     # Replay buffer size
