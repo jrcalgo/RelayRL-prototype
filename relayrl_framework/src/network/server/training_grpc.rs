@@ -6,7 +6,7 @@ use crate::network::server::python_subprocesses::python_algorithm_request::{
     PythonAlgorithmCommand, PythonAlgorithmRequest,
 };
 use crate::network::server::python_subprocesses::python_training_tensorboard::PythonTrainingTensorboard;
-use crate::orchestration::tonic::grpc_utils::{
+use crate::sys_utils::grpc_utils::{
     grpc_trajectory_to_relayrl_trajectory, serialize_model,
 };
 use crate::proto::{
@@ -659,7 +659,6 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
     ) -> Result<Response<RelayRLModel>, Status> {
         println!("[TrainingServer - client_poll] Received poll request from client...");
         let req: RequestModel = request.into_inner();
-        self.write().await.increment_req_state().await;
 
         // For the initial handshake
         if req.first_time != 0 {
@@ -668,29 +667,23 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
                 req.version
             );
 
-            // Acquire a short-lived read lock on the outer server.
-            let self_state: RwLockReadGuard<TrainingServerGrpc> = self.read().await;
+            let self_state = self.read().await;
 
-            // Check if a model load is needed (under a read lock).
-            let need_model_load: bool = {
-                let grpc_params_read: RwLockReadGuard<GrpcServiceParams> =
-                    self_state.grpc_params.read().await;
+            // Check if a model load is needed
+            let need_model_load = {
+                let grpc_params_read = self_state.grpc_params.read().await;
                 grpc_params_read.trained_model.read().await.is_none()
             };
 
             if need_model_load {
-                let outcome: bool = self_state.par_send_save_model().await;
+                let outcome = self_state.par_send_save_model().await;
                 println!(
                     "[TrainingServer - client_poll] Attempted to save model during handshake: {:?}",
                     outcome
                 );
 
                 if !outcome {
-                    eprintln!(
-                        "[TrainingServer - client_poll] Failed to send save model request during handshake"
-                    );
-
-                    self_state.increment_rep_state().await;
+                    eprintln!("[TrainingServer - client_poll] Failed to save model during handshake");
                     return Ok(Response::new(RelayRLModel {
                         code: 0,
                         model: vec![],
@@ -699,34 +692,26 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
                     }));
                 }
 
-                // Attempt to load the model from disk *outside* the read lock.
+                // Load the model from disk
                 match CModule::load_on_device(&self_state.server_model_path, Device::Cpu) {
                     Ok(model) => {
                         println!("[TrainingServer - client_poll] Loaded model during handshake");
-                        // Now acquire a write lock to put the model into grpc_params.
                         let mut grpc_params_write = self_state.grpc_params.write().await;
-
-                        // Write the loaded model into our shared state.
-                        {
-                            let mut trained = grpc_params_write.trained_model.write().await;
-                            *trained = Some(model);
-                        }
-                        grpc_params_write.model_ready = true;
-                        println!("[TrainingServer - client_poll] Model ready during handshake");
+                        let mut trained = grpc_params_write.trained_model.write().await;
+                        *trained = Some(model);
                     }
                     Err(e) => {
                         eprintln!("Failed to load model during handshake: {}", e);
                     }
                 }
+                self_state.grpc_params.write().await.model_ready = true;
             }
 
-            // Re-check state under a fresh read lock and respond if ready.
-            let grpc_params_read: RwLockReadGuard<GrpcServiceParams> =
-                self_state.grpc_params.read().await;
+            // Respond with the model if ready
+            let grpc_params_read = self_state.grpc_params.read().await;
             if grpc_params_read.model_ready {
-                let model_bytes: Vec<u8> = {
-                    let lock: RwLockReadGuard<Option<CModule>> =
-                        grpc_params_read.trained_model.read().await;
+                let model_bytes = {
+                    let lock = grpc_params_read.trained_model.read().await;
                     if let Some(ref model) = *lock {
                         serialize_model(model, std::env::current_dir()?)
                     } else {
@@ -734,8 +719,6 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
                     }
                 };
                 println!("[TrainingServer - client_poll] Sending model to client...");
-
-                self.write().await.increment_rep_state().await;
                 return Ok(Response::new(RelayRLModel {
                     code: 1,
                     model: model_bytes,
@@ -746,14 +729,11 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
         }
 
         // For subsequent polling requests:
-        let self_state: RwLockReadGuard<TrainingServerGrpc> = self.read().await;
-        let grpc_params_read: RwLockReadGuard<GrpcServiceParams> =
-            self_state.grpc_params.read().await;
-
+        let self_state = self.read().await;
+        let grpc_params_read = self_state.grpc_params.read().await;
         if grpc_params_read.model_ready {
             let model_bytes: Vec<u8> = {
-                let lock: RwLockReadGuard<Option<CModule>> =
-                    grpc_params_read.trained_model.read().await;
+                let lock = grpc_params_read.trained_model.read().await;
                 if let Some(ref model) = *lock {
                     serialize_model(model, env::current_dir()?)
                 } else {
@@ -761,8 +741,6 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
                 }
             };
             println!("[TrainingServer - client_poll] Sending model to client...");
-
-            self.write().await.increment_rep_state().await;
             return Ok(Response::new(RelayRLModel {
                 code: 1,
                 model: model_bytes,
@@ -771,35 +749,27 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
             }));
         }
 
-        let mut rx: Receiver<bool> = grpc_params_read
+        // Wait for a notification that the model is ready, with a timeout.
+        let mut rx = grpc_params_read
             .model_ready_tx
             .as_ref()
             .expect("Failed to get watch channel")
             .subscribe();
-
-        let timeout_duration: Duration =
-            Duration::from_millis(grpc_params_read.idle_timeout as u64);
+        let timeout_duration = Duration::from_millis(grpc_params_read.idle_timeout as u64);
         drop(grpc_params_read);
-
-        // Wait for a notification that the model is ready, with a timeout.
         match tokio::time::timeout(timeout_duration, rx.changed()).await {
             Ok(Ok(())) => {
-                // Notification received; re-read the updated state.
-                let self_state: RwLockReadGuard<TrainingServerGrpc> = self.read().await;
-                let grpc_params_read: RwLockReadGuard<GrpcServiceParams> =
-                    self_state.grpc_params.read().await;
-                if grpc_params_read.model_ready {
+                let self_state = self.read().await;
+                let grpc_params = self_state.grpc_params.read().await;
+                if grpc_params.model_ready {
                     let model_bytes: Vec<u8> = {
-                        let lock: RwLockReadGuard<Option<CModule>> =
-                            grpc_params_read.trained_model.read().await;
+                        let lock = grpc_params.trained_model.read().await;
                         if let Some(ref model) = *lock {
                             serialize_model(model, env::current_dir()?)
                         } else {
                             vec![]
                         }
                     };
-
-                    self.write().await.increment_rep_state().await;
                     Ok(Response::new(RelayRLModel {
                         code: 1,
                         model: model_bytes,
@@ -807,8 +777,6 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
                         error: String::new(),
                     }))
                 } else {
-                    // Should not occur if notification was sent correctly.
-                    self.write().await.increment_rep_state().await;
                     Ok(Response::new(RelayRLModel {
                         code: 0,
                         model: vec![],
@@ -819,8 +787,6 @@ impl RelayRLRoute for Arc<TokioRwLock<TrainingServerGrpc>> {
             }
             Ok(Err(_)) => Err(Status::internal("Model readiness channel closed")),
             Err(_) => {
-                // Timeout reached without receiving an update.
-                self.write().await.increment_rep_state().await;
                 Ok(Response::new(RelayRLModel {
                     code: 0,
                     model: vec![],

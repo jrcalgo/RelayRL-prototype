@@ -21,7 +21,7 @@ use tonic::Request;
 use tonic::transport::{Channel, Endpoint, Error};
 
 use crate::network::client::agent_wrapper::{convert_generic_dict, validate_model};
-use crate::orchestration::tonic::grpc_utils::{deserialize_model, serialize_action};
+use crate::sys_utils::grpc_utils::{deserialize_model, serialize_action};
 use crate::sys_utils::config_loader::ConfigLoader;
 use crate::types::action::{RelayRLAction, RelayRLData, TensorData};
 use crate::types::trajectory::{RelayRLTrajectory, RelayRLTrajectoryTrait};
@@ -317,13 +317,11 @@ impl RelayRLAgentGrpcTrait for RelayRLAgentGrpc {
     /// the model is deserialized and loaded, and the local version is updated.
     async fn initial_model_handshake(&mut self) {
         println!("[RelayRLAgent - initial_handshake] requesting initial model from server...");
-        let current_version: i64 = self.local_version.load(Ordering::SeqCst);
         let req_msg = RequestModel {
             first_time: 1,
-            version: current_version,
+            version: 0, // Use simple versioning
         };
-
-        'handshake: loop {
+        loop {
             match self
                 .stub
                 .as_mut()
@@ -333,70 +331,32 @@ impl RelayRLAgentGrpcTrait for RelayRLAgentGrpc {
             {
                 Ok(response) => {
                     let resp: RelayRLModel = response.into_inner();
-                    if resp.code == 1 {
-                        self.local_version = AtomicI64::from(resp.version);
-                        if !resp.model.is_empty() {
-                            println!(
-                                "[RelayRLAgent - initial_handshake] Received initial model from server..."
-                            );
-                            match deserialize_model(resp.model) {
-                                Ok(loaded_model) => {
-                                    // validate and then load new model into memory
-                                    validate_model(&loaded_model);
-                                    println!(
-                                        "[RelayRLAgent - initial_handshake] Validated initial model from server..."
-                                    );
-                                    loaded_model
-                                        .save(&self.client_model_path)
-                                        .expect("Failed to save runtime model to path");
-                                    println!(
-                                        "[RelayRLAgent - initial_handshake] Saved initial model to disk..."
-                                    );
-                                    {
-                                        println!(
-                                            "[RelayRLAgent - initial_handshake] Waiting to acquire write lock on model..."
-                                        );
-                                        if let Ok(mut model_lock) = self.model.try_write() {
-                                            *model_lock = Some(loaded_model);
-                                            println!(
-                                                "[RelayRLAgent - initial_handshake] Write lock acquired and model updated."
-                                            );
-                                        } else {
-                                            println!(
-                                                "[RelayRLAgent - initial_handshake] Write lock not available, yielding..."
-                                            );
-                                            tokio::task::yield_now().await;
-                                        }
-                                    }
-                                    println!(
-                                        "[RelayRLAgent - initial_handshake] Received and loaded initial model from server."
-                                    );
-                                    break 'handshake;
-                                }
-                                Err(e) => {
-                                    eprintln!(
-                                        "[RelayRLAgent - initial_handshake] Failed to load model: {}",
-                                        e
-                                    );
-                                }
+                    if resp.code == 1 && !resp.model.is_empty() {
+                        println!("[RelayRLAgent - initial_handshake] Received initial model from server...");
+                        match deserialize_model(resp.model) {
+                            Ok(loaded_model) => {
+                                validate_model(&loaded_model);
+                                loaded_model.save(&self.client_model_path).expect("Failed to save runtime model to path");
+                                let mut model_lock = self.model.write().await;
+                                *model_lock = Some(loaded_model);
+                                println!("[RelayRLAgent - initial_handshake] Model loaded, proceeding to RL loop.");
+                                break;
                             }
-                        } else {
-                            println!(
-                                "[RelayRLAgent - initial_handshake] No initial model available. Waiting..."
-                            );
+                            Err(e) => {
+                                eprintln!("[RelayRLAgent - initial_handshake] Failed to load model: {}", e);
+                            }
                         }
+                    } else {
+                        println!("[RelayRLAgent - initial_handshake] No initial model available. Waiting...");
                     }
                 }
                 Err(e) => {
-                    eprintln!(
-                        "[RelayRLAgent - initial_handshake] gRPC error during handshake: {}",
-                        e
-                    );
+                    eprintln!("[RelayRLAgent - initial_handshake] gRPC error during handshake: {}", e);
                 }
             }
-            // Wait a bit before trying again
             tokio::time::sleep(Duration::from_millis(500)).await;
         }
+        // After this, always proceed to RL loop!
     }
 
     /// Requests an action from the current model using the provided observation and mask.

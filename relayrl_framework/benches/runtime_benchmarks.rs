@@ -4,11 +4,11 @@ use criterion::measurement::WallTime;
 use criterion::{
     BenchmarkGroup, BenchmarkId, Criterion, Throughput, criterion_group, criterion_main,
 };
-use relayrl_framework::action::{RelayRLAction, TensorData};
-use relayrl_framework::client::agent_wrapper::RelayRLAgent;
-use relayrl_framework::get_or_init_tokio_runtime;
-use relayrl_framework::server::training_server_wrapper::TrainingServer;
-use relayrl_framework::trajectory::{RelayRLTrajectoryTrait, serialize_trajectory};
+use relayrl_framework::types::action::{RelayRLAction, TensorData};
+use relayrl_framework::network::client::agent_wrapper::RelayRLAgent;
+use relayrl_framework::network::server::training_server_wrapper::TrainingServer;
+use relayrl_framework::orchestration::tokio::utils::get_or_init_tokio_runtime;
+use relayrl_framework::types::trajectory::{RelayRLTrajectoryTrait, serialize_trajectory};
 use serde_pickle as pickle;
 use std::sync::Arc;
 use std::time::Duration;
@@ -27,7 +27,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("u8_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let u8_tensor: Tensor = Tensor::f_from_slice(&vec![u8::from(1); *size])
+                let u8_tensor: Tensor = Tensor::f_from_slice(&vec![u8::from(1); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(u8_tensor).expect("Failed to create TensorData");
@@ -37,7 +37,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("i16_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let i16_tensor: Tensor = Tensor::f_from_slice(&vec![i16::from(1.0); *size])
+                let i16_tensor: Tensor = Tensor::f_from_slice(&vec![1i16; *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(i16_tensor).expect("Failed to create TensorData");
@@ -47,7 +47,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("i32_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let i32_tensor: Tensor = Tensor::f_from_slice(&vec![i32::from(1); *size])
+                let i32_tensor: Tensor = Tensor::f_from_slice(&vec![i32::from(1); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(i32_tensor).expect("Failed to create TensorData");
@@ -57,7 +57,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("i64_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let i64_tensor: Tensor = Tensor::f_from_slice(&vec![i64::from(1); *size])
+                let i64_tensor: Tensor = Tensor::f_from_slice(&vec![i64::from(1); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(i64_tensor).expect("Failed to create TensorData");
@@ -67,7 +67,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("f32_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let f32_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size])
+                let f32_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(f32_tensor).expect("Failed to create TensorData");
@@ -77,7 +77,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("f64_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let f64_tensor: Tensor = Tensor::f_from_slice(&vec![f64::from(1.0); *size])
+                let f64_tensor: Tensor = Tensor::f_from_slice(&vec![f64::from(1.0); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(f64_tensor).expect("Failed to create TensorData");
@@ -87,7 +87,7 @@ fn benchmark_tensor_serialization(c: &mut Criterion) {
 
         group.bench_with_input(BenchmarkId::new("bool_tensor", size), size, |b, &size| {
             b.iter(|| {
-                let bool_tensor: Tensor = Tensor::f_from_slice(&vec![bool::from(true); *size])
+                let bool_tensor: Tensor = Tensor::f_from_slice(&vec![bool::from(true); *size as usize])
                     .expect("Failed to create tensor");
                 let tensordata: TensorData =
                     TensorData::try_from(bool_tensor).expect("Failed to create TensorData");
@@ -111,11 +111,11 @@ fn benchmark_action_serialization(c: &mut Criterion) {
             |b, &size| {
                 b.iter(|| {
                     group.throughput(Throughput::Bytes(*size * 3));
-                    let obs_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size])
+                    let obs_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size as usize])
                         .expect("Failed to create tensor");
-                    let act_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size])
+                    let act_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size as usize])
                         .expect("Failed to create tensor");
-                    let mask_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size])
+                    let mask_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size as usize])
                         .expect("Failed to create tensor");
                     let obs_td: TensorData =
                         TensorData::try_from(obs_tensor).expect("Failed to create TensorData");
@@ -147,7 +147,7 @@ fn benchmark_action_serialization(c: &mut Criterion) {
             |b, &size| {
                 b.iter(|| {
                     group.throughput(Throughput::Bytes(*size));
-                    let obs_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size])
+                    let obs_tensor: Tensor = Tensor::f_from_slice(&vec![f32::from(1.0); *size as usize])
                         .expect("Failed to create tensor");
                     let obs_td: TensorData =
                         TensorData::try_from(obs_tensor).expect("Failed to create TensorData");
@@ -187,14 +187,7 @@ fn benchmark_trajectory_serialization(c: &mut Criterion) {
             group.throughput(Throughput::Bytes(*tensor_size * *traj_size));
 
             group.bench_with_input(
-                BenchmarkId::new(
-                    (
-                        "Trajectory_tensor_size_{}_traj_size_{}",
-                        tensor_size,
-                        traj_size,
-                    ),
-                    *tensor_size * *traj_size,
-                ),
+                BenchmarkId::new(format!("Trajectory_tensor_size_{}_traj_size_{}", tensor_size, traj_size), *tensor_size * *traj_size),
                 &(*tensor_size, *traj_size),
                 |b, &(tensor_size, traj_size)| {
                     b.iter(|| {

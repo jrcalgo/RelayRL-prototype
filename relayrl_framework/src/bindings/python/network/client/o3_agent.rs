@@ -7,7 +7,7 @@ use crate::types::action::{RelayRLAction, TensorData};
 use crate::network::client::agent_grpc::RelayRLAgentGrpcTrait;
 use crate::network::client::agent_wrapper::RelayRLAgent;
 use crate::network::client::agent_zmq::RelayRLAgentZmqTrait;
-use crate::orchestration::tokio::utils::get_or_init_tokio_runtime;
+use crate::sys_utils::tokio_utils::get_or_init_tokio_runtime;
 use pyo3::types::PyAnyMethods;
 use pyo3::{Bound, Py, PyAny, PyErr, PyResult, Python, pyclass, pyfunction, pymethods};
 use std::ops::{Deref, DerefMut};

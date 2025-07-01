@@ -22,7 +22,7 @@
 //!
 //! Agents, training servers, configuration loaders, actions, and trajectories are exposed as
 //! Python-accessible classes within the `relayrl_framework` module. This enables Python users to
-//! interact with RelayRL’s core functionality without directly handling the Rust backend.
+//! interact with RelayRL's core functionality without directly handling the Rust backend.
 //!
 //! The exposed Python module includes the following key classes:
 //!
@@ -39,7 +39,7 @@
 //! ## Using RelayRL
 //!
 
-mod network;
+pub mod network;
 
 #[cfg(feature = "python_bindings")]
 use crate::bindings::python::network::client::o3_agent::PyRelayRLAgent;
@@ -87,16 +87,9 @@ pub(crate) mod sys_utils {
         feature = "zmq_network"
     ))]
     pub(crate) mod resolve_server_config;
-}
-
-pub(crate) mod orchestration {
-    pub(crate) mod tokio {
-        pub(crate) mod utils;
-    }
+    pub(crate) mod tokio_utils;
     #[cfg(feature = "grpc_network")]
-    pub(crate) mod tonic {
-        pub(crate) mod grpc_utils;
-    }
+    pub(crate) mod grpc_utils;
 }
 
 /// **Core RelayRL Data Types**: Define the primary data structures used
@@ -112,8 +105,8 @@ pub mod types {
 /// **Python Bindings for RelayRL**: This module contains the Rust-to-Python bindings,
 /// exposing RelayRL components as Python classes. The `o3_*` modules implement PyO3-compatible
 /// wrappers for core structures, enabling smooth Python interaction.
-pub(crate) mod bindings {
-    pub(crate) mod python {
+pub mod bindings {
+    pub mod python {
         #[cfg(any(
             feature = "networks",
             feature = "grpc_network",
@@ -121,10 +114,10 @@ pub(crate) mod bindings {
             feature = "python_bindings"
         ))]
         #[cfg_attr(bench, visibility = "pub")]
-        pub(crate) mod o3_action;
+        pub mod o3_action;
         #[cfg(feature = "python_bindings")]
         #[cfg_attr(bench, visibility = "pub")]
-        pub(crate) mod o3_config_loader;
+        pub mod o3_config_loader;
         #[cfg(any(
             feature = "networks",
             feature = "grpc_network",
@@ -132,19 +125,19 @@ pub(crate) mod bindings {
             feature = "python_bindings"
         ))]
         #[cfg_attr(bench, visibility = "pub")]
-        pub(crate) mod o3_trajectory;
+        pub mod o3_trajectory;
 
         /// **Network Python Wrappers**: Exposes the RelayRL network components to Python.
         #[cfg(feature = "python_bindings")]
-        pub(crate) mod network {
+        pub mod network {
             /// **Client Python Wrappers**: Wraps RelayRL agents for Python integration.
-            pub(crate) mod client {
-                pub(crate) mod o3_agent;
+            pub mod client {
+                pub mod o3_agent;
             }
 
             /// **Server Python Wrappers**: Exposes the RelayRL training server to Python.
-            pub(crate) mod server {
-                pub(crate) mod o3_training_server;
+            pub mod server {
+                pub mod o3_training_server;
             }
         }
     }
