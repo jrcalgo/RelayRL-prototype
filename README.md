@@ -74,7 +74,7 @@ While it is theoretically possible to launch multiple agent and training server 
 
 ## Repository Feature Roadmap
 
-- Improved stability and error handling for gRPC and ZeroMQ implementations
+- Improved training stability and error handling for gRPC and ZeroMQ implementations
 - Cleaned up user-level APIs (RelayRLAgent, TrainingServer, ConfigLoader, etc.)
 - Better documentation and API reference
 - Benchmarking against known frameworks (RayRLLib, Stable-Baselines3, CleanRL, etc.)
@@ -91,7 +91,8 @@ While it is theoretically possible to launch multiple agent and training server 
 
 ## Disclaimer
 
-This project is a **prototype** and is **unstable during training**.  
+This project is a **prototype** and is **unstable during training**.
+As of now, although both transport loops are functional, ZMQ is provably more stable than gRPC in training tasks.
 APIs and features are subject to change.  
 Contributions and feedback are welcome!
 
