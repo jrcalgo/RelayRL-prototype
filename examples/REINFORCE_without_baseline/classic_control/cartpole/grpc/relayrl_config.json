@@ -36,11 +36,13 @@
             "port": "7777"
         }
     },
-    "training_tensorboard": {
-        "_comment1": "Runs `tensorboard --logdir /logs` in cwd on start up of server.",
-        "launch_tb_on_startup": true,
-        "_comment2": "scalar tags can be any column header from `progress.txt` files.",
-        "scalar_tags": "AverageEpRet;LossQ",
-        "global_step_tag": "Epoch"
+    "tensorboard": {
+        "training_tensorboard": {
+            "_comment1": "Runs `tensorboard --logdir /logs` in cwd on start up of server.",
+            "launch_tb_on_startup": true,
+            "_comment2": "scalar tags can be any column header from `progress.txt` files.",
+            "scalar_tags": "AverageEpRet;LossQ",
+            "global_step_tag": "Epoch"
+        }
     }
 }

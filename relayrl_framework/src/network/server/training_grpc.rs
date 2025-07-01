@@ -256,7 +256,6 @@ impl TrainingServerGrpc {
         // Determine the batch size from the loaded algorithm parameters (default to 1 if none are set).
         let batch_size: u32 = if let Some(loaded_params) = config.get_algorithm_params() {
             match loaded_params {
-                LoadedAlgorithmParams::PPO(_) => 1,
                 LoadedAlgorithmParams::REINFORCE(_) => 1,
             }
         } else {

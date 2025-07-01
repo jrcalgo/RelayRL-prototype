@@ -65,18 +65,6 @@ pub static DEFAULT_CONFIG_PATH: Lazy<Option<PathBuf>> =
 
 pub const DEFAULT_CONFIG_CONTENT: &str = r#"{
     "algorithms": {
-        "PPO": {
-            "seed": 0,
-            "traj_per_epoch": 1,
-            "clip_ratio": 0.1,
-            "gamma": 0.99,
-            "lam": 0.97,
-            "pi_lr": 3e-4,
-            "vf_lr": 3e-4,
-            "train_pi_iters": 40,
-            "train_v_iters": 40,
-            "target_kl": 0.01
-        },
         "REINFORCE": {
             "discrete": true,
             "with_vf_baseline": false,
@@ -145,8 +133,6 @@ pub struct Config {
 /// Each field is optional and holds algorithm-specific parameters.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AlgorithmConfig {
-    #[serde(rename = "PPO")]
-    pub ppo: Option<PPOParams>,
     #[serde(rename = "REINFORCE")]
     pub reinforce: Option<REINFORCEParams>,
 }
@@ -155,23 +141,7 @@ pub struct AlgorithmConfig {
 /// Each variant corresponds to one algorithm's parameter struct.
 #[derive(Debug, Clone)]
 pub enum LoadedAlgorithmParams {
-    PPO(PPOParams),
     REINFORCE(REINFORCEParams),
-}
-
-/// Parameters for the PPO algorithm.
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct PPOParams {
-    pub seed: u32,
-    pub traj_per_epoch: u32,
-    pub clip_ratio: f32,
-    pub gamma: f32,
-    pub lam: f32,
-    pub pi_lr: f32,
-    pub vf_lr: f32,
-    pub train_pi_iters: u32,
-    pub train_v_iters: u32,
-    pub target_kl: f32,
 }
 
 /// Parameters for the REINFORCE algorithm.
@@ -434,25 +404,6 @@ impl ConfigLoader {
             return None;
         }
         match algo {
-            "PPO" => {
-                let params = config
-                    .algorithms
-                    .as_ref()
-                    .and_then(|alg| alg.ppo.clone())
-                    .unwrap_or(PPOParams {
-                        seed: 0,
-                        traj_per_epoch: 3,
-                        clip_ratio: 0.2,
-                        gamma: 0.99,
-                        lam: 0.97,
-                        pi_lr: 3e-4,
-                        vf_lr: 1e-3,
-                        train_pi_iters: 80,
-                        train_v_iters: 80,
-                        target_kl: 0.01,
-                    });
-                Some(LoadedAlgorithmParams::PPO(params))
-            }
             "REINFORCE" => {
                 let params = config
                     .algorithms

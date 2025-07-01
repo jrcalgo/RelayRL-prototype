@@ -70,22 +70,6 @@ impl PyConfigLoader {
         if let Some(algorithm_config) = algorithm_params {
             let dict: Bound<PyDict> = PyDict::new(py);
 
-            // PPO
-            if let LoadedAlgorithmParams::PPO(ppo_params) = algorithm_config {
-                let ppo_dict: Bound<PyDict> = PyDict::new(py);
-                ppo_dict.set_item("seed", ppo_params.seed)?;
-                ppo_dict.set_item("traj_per_epoch", ppo_params.traj_per_epoch)?;
-                ppo_dict.set_item("clip_ratio", ppo_params.clip_ratio)?;
-                ppo_dict.set_item("gamma", ppo_params.gamma)?;
-                ppo_dict.set_item("lam", ppo_params.lam)?;
-                ppo_dict.set_item("pi_lr", ppo_params.pi_lr)?;
-                ppo_dict.set_item("vf_lr", ppo_params.vf_lr)?;
-                ppo_dict.set_item("train_pi_iters", ppo_params.train_pi_iters)?;
-                ppo_dict.set_item("train_v_iters", ppo_params.train_v_iters)?;
-                ppo_dict.set_item("target_kl", ppo_params.target_kl)?;
-                dict.set_item("PPO", ppo_dict)?;
-            }
-
             // REINFORCE
             if let LoadedAlgorithmParams::REINFORCE(reinforce_params) = algorithm_config {
                 let reinforce_dict: Bound<PyDict> = PyDict::new(py);
@@ -100,13 +84,9 @@ impl PyConfigLoader {
                 reinforce_dict.set_item("train_vf_iters", reinforce_params.train_vf_iters)?;
                 dict.set_item("REINFORCE", reinforce_dict)?;
             }
-
-            // Return the constructed dictionary as a PyObject
-            Ok(Some(dict.into()))
-        } else {
-            // No algorithm params loaded
-            Ok(None)
+            return Ok(Some(dict.into_py(py)));
         }
+        Ok(None)
     }
 
     /// Retrieves the training server parameters as a Python dictionary.
