@@ -1,10 +1,12 @@
 # Package metadata and basic configuration for the relayrl_framework crate.
 [package]
 name = "relayrl_framework"                 # The name of the package.
-version = "0.4.51"                         # Current version of the package.
+version = "0.4.52"                         # Current version of the package.
 authors = ["jrcalgo <jacksonr121@outlook.com>"]                      # List of authors.
 edition = "2024"                          # Rust edition being used.
 description = "A system-oriented, distributed  reinforcement learning framework using a Rust backend with Python interfaces."  # Brief description.
+repository = "https://github.com/jrcalgo/RelayRL-prototype"  # Link to the GitHub repository.
+documentation = "https://docs.rs/crate/relayrl_framework"
 readme = "README.md"                      # Path to the README file.
 keywords = ['reinforcement', 'learning', 'rl', 'distributed', 'system-integration']  # Keywords for discovery.
 categories = ['science', 'simulation', 'asynchronous', 'network-programming']  # Crates.io categories.
