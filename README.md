@@ -78,7 +78,7 @@ This repository reflects early-stage development: APIs, performance optimization
 - Benchmarking against known frameworks (RayRLLib, Stable-Baselines3, CleanRL, etc.)
 - Preservation of most critical components/logic
 
-## Related Work (Currently in-progress in a separate repository)
+## RelayRL Framework Roadmap (Merged into a [monorepo](https://github.com/jrcalgo/RelayRL))
 
 - Improved multi-agent support and orchestration by enhancing component modularity
 - Enhanced stability, scalability and error handling during training through comprehensive network error handling, backpressure, configurable components, etc.
@@ -86,6 +86,7 @@ This repository reflects early-stage development: APIs, performance optimization
 - Exposing scalable components for containerized automation
 - Easing execution and external application integration through compilation into CLI executables
 - More built-in RL algorithms available
+- And likely more to come...
 
 ## Disclaimer
 
