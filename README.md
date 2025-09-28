@@ -1,19 +1,20 @@
-# RelayRL, a Distributed Reinforcement Learning Framework
+# RelayRL — Prototype Distributed Reinforcement Learning Framework
 
-> **Warning:**  
-> This project is a **prototype** and is **unstable during training**. Use at your own risk and expect breaking changes.
+> **Prototype Warning:**  
+> This repository contains an early-stage prototype. The framework is unstable during training, and intended primarily for research and experimentation.
 > 
 > **Platform Support:**
 > RelayRL runs on **MacOS, Linux, and Windows** (x86_64). Some dependencies may require additional setup on Windows.
 
-RelayRL is a high-performance, distributed reinforcement learning (RL) framework designed for research and experimentation. By using proven transport-layer communication protocols, RelayRL integrates a client-server architecture. It provides a robust Rust backend with Python bindings, enabling seamless integration with modern ML workflows and high-speed system-level orchestration. 
+RelayRL aims to be a high-performance, distributed reinforcement learning (RL) framework designed to explore single-agent RL with robust system-level orchestration. It provides a Rust backend for performance-critical components, Python bindings for integration with ML workflows, and a flexible client-server architecture using gRPC or ZeroMQ.
 
-## Single-Agent Focus
+## Prototype Scope
 
-RelayRL is **primarily designed for single-agent RL**.  
-While it is theoretically possible to launch multiple agent and training server processes for multi-agent scenarios, the framework does **not** natively support scalable multi-agent orchestration at this time.
+RelayRL is currently **focused on single-agent RL**. Multi-agent training is not fully supported—while you can launch multiple agents manually, the framework does not yet provide scalable multi-agent orchestration.
 
-## Features
+This repository reflects early-stage development: APIs, performance optimizations, and features are experimental. The codebase is a **research prototype** rather than a production-ready framework.
+
+## Prototype Features
 
 - **Distributed RL Orchestration:**
   Run agents and training servers as separate processes, communicating via gRPC or ZeroMQ.
@@ -68,14 +69,11 @@ While it is theoretically possible to launch multiple agent and training server 
 - `relayrl_framework/` — Core Rust framework and Python bindings
 - `examples/` — Example scripts and Jupyter notebooks (Python API usage)
 - `README.md` — This file (project overview)
-- `CONTRIBUTING.md` — OSS Contribution instructions for relayrl_framework crate
 - `relayrl_framework/README.md` — Framework-level and development instructions
 - `examples/README.md` — Python integration and API utilization instructions
 
-## Repository Feature Roadmap
+## Prototype Roadmap
 
-- Improved training stability and error handling for gRPC and ZeroMQ implementations
-- Cleaned up user-level APIs (RelayRLAgent, TrainingServer, ConfigLoader, etc.)
 - Better documentation and API reference
 - Benchmarking against known frameworks (RayRLLib, Stable-Baselines3, CleanRL, etc.)
 - Preservation of most critical components/logic
@@ -91,14 +89,9 @@ While it is theoretically possible to launch multiple agent and training server 
 
 ## Disclaimer
 
-This project is a **prototype** and is **unstable during training**.
-As of now, although both transport loops are functional, ZMQ is provably more stable than gRPC in training tasks.
-APIs and features are subject to change.  
+This framework is a research prototype. gRPC and ZMQ transport loops are functional, but ZMQ is currently more stable. 
+Features, APIs, and implementations are experimental and likely to change in future versions.
 Contributions and feedback are welcome!
-
-## Contributions
-
-[See contribution instructions!](CONTRIBUTING.md)
 
 ## License
 
