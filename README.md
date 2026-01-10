@@ -1,5 +1,5 @@
 <div align="center">
-RelayRL's repository has moved! View the [monorepo](https://github.com/jrcalgo/RelayRL)!
+RelayRL's repository has moved! View the [monorepo](https://github.com/jrcalgo/RelayRL)
 </div>
 
 # RelayRL — Prototype Distributed Reinforcement Learning Framework
