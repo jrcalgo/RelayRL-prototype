@@ -1,3 +1,7 @@
+<div align="center">
+RelayRL's repository has moved! View the [monorepo](https://github.com/jrcalgo/RelayRL)!
+</div>
+
 # RelayRL — Prototype Distributed Reinforcement Learning Framework
 
 > **Prototype Warning:**  
@@ -77,17 +81,7 @@ This repository reflects early-stage development: APIs, performance optimization
 - Better documentation and API reference
 - Benchmarking against known frameworks (RayRLLib, Stable-Baselines3, CleanRL, etc.)
 - Preservation of most critical components/logic
-
-## RelayRL Framework Roadmap (Merged into a [monorepo](https://github.com/jrcalgo/RelayRL))
-
-- Improved multi-agent support and orchestration by enhancing component modularity
-- Enhanced stability, scalability and error handling during training through comprehensive network error handling, backpressure, configurable components, etc.
-- Real-time configuration updates and shutdown/init signals through lifecycle control
-- Exposing scalable components for containerized automation
-- Easing execution and external application integration through compilation into CLI executables
-- More built-in RL algorithms available
-- And likely more to come...
-
+  
 ## Disclaimer
 
 This framework is a research prototype. gRPC and ZMQ transport loops are functional, but ZMQ is currently more stable. 
