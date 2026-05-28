@@ -1,6 +1,6 @@
-<p align="center">
-  RelayRL's repository has moved! View the <a href="https://github.com/jrcalgo/RelayRL">monorepo</a>
-</p>
+<p align="center">This prototype has been <i>completely</i> redesigned and rewritten into the latest versions of RelayRL. There is very minimal resemblance between this version and the latest versions.</p>
+<p align="center"><a href="https://github.com/jrcalgo/RelayRL">View the RelayRL monorepo here!</a></p>
+<p align="center">This repository stores the final version of a Rust rewrite of an early <a href="https://github.com/DIR-LAB/RL4Sys">RL4Sys</a> version. At the time, renaming this project to RelayRL was meant out of respect for the fact that RL4Sys had yet to be released, and has now been retroactively re-renamed back to RL4Sys.</p>
 
 # RelayRL — Prototype Distributed Reinforcement Learning Framework
 
